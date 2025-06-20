@@ -8,6 +8,7 @@ import requests
 import json
 from collections import defaultdict
 import time
+from oui_database import load_local_oui_database
 
 class NetworkDiscovery:
     def __init__(self):
@@ -18,27 +19,7 @@ class NetworkDiscovery:
         """Load MAC address to vendor mapping"""
         # You can download this from IEEE or use a static database
         # For demo purposes, here's a small sample
-        return {
-            "00:50:56": "VMware",
-            "08:00:27": "Oracle VirtualBox",
-            "52:54:00": "QEMU/KVM",
-            "00:0C:29": "VMware",
-            "00:1B:21": "Intel",
-            "D4:BE:D9": "Dell",
-            "B8:27:EB": "Raspberry Pi Foundation",
-            "DC:A6:32": "Raspberry Pi Foundation",
-            "E4:5F:01": "Raspberry Pi Foundation",
-            "00:16:3E": "Xen",
-            "00:15:5D": "Microsoft Hyper-V",
-            "00:1C:42": "Parallels",
-            "00:03:FF": "Microsoft",
-            "00:50:F2": "Microsoft",
-            "28:D2:44": "Fiberhome",
-            "70:B3:D5": "IEEE Registration Authority",
-            "00:90:0B": "Cisco Systems",
-            "00:40:96": "Cisco Systems",
-            "00:D0:BC": "Cisco Systems",
-        }
+        return load_local_oui_database()
     
     def ping_sweep(self, network):
         """Perform ping sweep on network range"""
@@ -48,10 +29,10 @@ class NetworkDiscovery:
         def ping_host(ip):
             try:
                 if platform.system().lower() == 'windows':
-                    result = subprocess.run(['ping', '-n', '1', '-w', '1000', str(ip)], 
+                    result = subprocess.run(['ping', '-n', '1', '-w', '1000', str(ip)], #windows
                                           capture_output=True, text=True, timeout=3)
                 else:
-                    result = subprocess.run(['ping', '-c', '1', '-W', '1', str(ip)], 
+                    result = subprocess.run(['ping', '-c', '1', '-W', '1', str(ip)], #mac
                                           capture_output=True, text=True, timeout=3)
                 return str(ip) if result.returncode == 0 else None
             except:
