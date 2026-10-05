@@ -1,14 +1,16 @@
-import socket
-import subprocess
+import concurrent.futures
+import ipaddress
 import platform
 import re
-import ipaddress
-import concurrent.futures
-import requests
-import json
+import socket
+import subprocess
 from collections import defaultdict
-import time
-from oui_database import load_local_oui_database
+
+if __package__:
+    from .oui_database import load_local_oui_database
+else:  # Support running this file directly as a script.
+    from oui_database import load_local_oui_database
+
 
 class NetworkDiscovery:
     def __init__(self):
@@ -224,21 +226,21 @@ class NetworkDiscovery:
 def main():
     # Example usage
     discovery = NetworkDiscovery()
-    
+
     # Discover devices on local network
     # Change this to your network range
     network_range = "192.168.1.0/24"
-    
+
     # Discover devices (set include_port_scan=True for more detailed classification)
     devices = discovery.discover_network(network_range, include_port_scan=True)
-    
+
     # Display results
     print("\n" + "="*80)
     print("NETWORK DISCOVERY RESULTS")
     print("="*80)
-    
+
     device_counts = defaultdict(int)
-    
+
     for device in devices:
         print(f"\nIP Address: {device['ip']}")
         print(f"Hostname: {device['hostname']}")
@@ -248,18 +250,20 @@ def main():
         if device['open_ports']:
             print(f"Open Ports: {', '.join(map(str, device['open_ports']))}")
         print("-" * 40)
-        
+
         device_counts[device['type']] += 1
-    
+
     # Summary
     print(f"\nSUMMARY:")
     print(f"Total devices found: {len(devices)}")
     for device_type, count in device_counts.items():
         print(f"{device_type}: {count}")
-    
+
     # Example of manual device addition
     print("\nAdding manual device...")
     manual_device = discovery.add_manual_device("192.168.1.1", "Router", "Router")
     print(f"Manual device: {manual_device}")
 
-main()
+
+if __name__ == "__main__":
+    main()
