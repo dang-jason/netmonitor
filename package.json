@@ -1,0 +1,17 @@
+{
+  "name": "netmonitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Network device inventory and monitoring API",
+  "scripts": {
+    "start:api": "node backend/api/server.js",
+    "test:api": "node --test backend/api/app.test.js",
+    "dev:dashboard": "npm --prefix frontend run dev",
+    "build:dashboard": "npm --prefix frontend run build"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
+}
